@@ -89,7 +89,7 @@ a{color:var(--accent-l);text-decoration:none;transition:color .15s}a:hover{color
 
 /* LAYOUT */
 .wrap{display:flex;margin-top:var(--header-h);min-height:calc(100vh - var(--header-h))}
-.main{margin-left:var(--sidebar-w);flex:1;max-width:860px;padding:36px 44px 80px;min-width:0;overflow-x:hidden}
+.main{margin-left:var(--sidebar-w);flex:1;padding:36px 44px 80px;min-width:0;overflow-x:hidden}
 
 /* ARTICLE STYLES */
 .sec{margin-bottom:56px}
@@ -221,7 +221,7 @@ tr:hover td{background:var(--card-hover-bg)}
 
 /* Large desktop — constrain main content when sidebar + TOC both visible */
 @media(min-width:1280px){
-  .main{max-width:780px}
+  .main{padding:36px 60px 80px}
 }
 
 /* Tablet landscape / small laptop (1024px and below) */
