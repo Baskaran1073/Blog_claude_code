@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -323,7 +322,7 @@ tr:hover td{background:var(--card-hover-bg)}
 <!-- HERO -->
 <div class="hero">
   <h1>Getting Started with <em>Claude Code</em></h1>
-  <p>Claude Code is Anthropic's agentic coding tool. It reads your codebase, edits files, runs commands, and integrates with your terminal, IDE, browser, and apps. This guide covers everything from the <a href="https://code.claude.com/docs" target="_blank">official documentation</a> so you can start using it today.</p>
+  <p>Claude Code is Anthropic's agentic coding tool. It reads your codebase, edits files, runs commands, and integrates with your terminal, IDE, browser, and apps.</p>
   <div class="badges">
     <span class="badge"><i class="fas fa-terminal"></i> Terminal</span>
     <span class="badge"><i class="fas fa-code"></i> VS Code</span>
@@ -343,7 +342,7 @@ tr:hover td{background:var(--card-hover-bg)}
 
   <p>Claude Code is an agentic coding tool that reads your codebase, edits files, and runs commands. It works in your terminal, IDE, browser, and as a desktop app. Unlike simple code completion, Claude Code operates in an <strong>agentic loop</strong> — it gathers context, plans, acts, and verifies its own work.</p>
 
-  <h3>Why Our Team Uses Claude Code</h3>
+  <h3>Why Our CloseFuture Team Uses Claude Code?</h3>
   <div class="cgrid">
     <div class="mc"><div class="mc-i">⚡</div><h4>Ship Faster</h4><p>Automate boilerplate, test writing, and code gen. Ship features in hours, not days.</p></div>
     <div class="mc"><div class="mc-i">🔁</div><h4>Git Automation</h4><p>Commits, branches, PRs, code reviews — all through natural language.</p></div>
@@ -361,7 +360,7 @@ tr:hover td{background:var(--card-hover-bg)}
     <li><i class="fas fa-chevron-right"></i><div><strong>Search and navigate</strong> — "Find all API endpoints that don't have auth checks"</div></li>
     <li><i class="fas fa-chevron-right"></i><div><strong>Git operations</strong> — "Commit these changes, create a PR with a clear description"</div></li>
     <li><i class="fas fa-chevron-right"></i><div><strong>Automate CI workflows</strong> — Use in GitHub Actions for automated code reviews</div></li>
-    <li><i class="fas fa-chevron-right"></i><div><strong>Connect external tools</strong> — Jira, Slack, databases via MCP protocol</div></li>
+    <li><i class="fas fa-chevron-right"></i><div><strong>Connect external tools</strong> — Jira, Slack,Supabase databases via MCP protocol</div></li>
   </ul>
 
   <h3>Platforms at a Glance</h3>
@@ -683,7 +682,7 @@ claude "implement JWT authentication middleware"
 - API routes in src/api/
 - Components in src/components/
 - Business logic in src/services/
-- All DB access through Prisma ORM
+- All DB access through Supabase Client (@supabase/supabase-js)
 
 ## Conventions
 - Branch naming: feature/*, bugfix/*, hotfix/*
@@ -1586,6 +1585,152 @@ claude mcp add --transport http supabase https://mcp.supabase.com/mcp
   <div class="co warn"><i class="fas fa-exclamation-triangle"></i><div><strong>Security best practices:</strong> Always test in sandboxed environments before applying to production. Use <code>read_only=true</code> for sensitive environments. Restrict access with <code>project_ref</code> scoping. Agents accelerate routine work but cannot replace architectural decision-making expertise.</div></div>
 
   <div class="co info"><i class="fas fa-info-circle"></i><div><strong>Source:</strong> Based on <a href="https://medium.com/@dan.avila7/claude-code-supabase-integration-complete-guide-with-agents-commands-and-mcp-427613d9051e" target="_blank">Claude Code + Supabase Integration</a> by Daniel Avila. Templates via <a href="https://github.com/davila7/claude-code-templates" target="_blank">claude-code-templates</a> (<a href="https://www.aitmpl.com" target="_blank">aitmpl.com</a> — 800+ Claude Code components). MCP docs: <a href="https://supabase.com/docs/guides/getting-started/mcp" target="_blank">Supabase MCP Guide</a>.</div></div>
+
+  <!-- ============================================================ -->
+  <!-- SUPABASE AGENT SKILLS — POSTGRES BEST PRACTICES -->
+  <!-- ============================================================ -->
+  <h3><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:6px;font-size:14px"></i>Adding Supabase Skills to Claude Code</h3>
+
+  <p>Supabase has released an open-source set of <strong>Postgres Best Practices</strong> as <a href="https://github.com/supabase/agent-skills" target="_blank">Agent Skills</a> — a format originally developed by <a href="https://github.com/anthropics/skills" target="_blank">Anthropic</a> to give AI agents domain expertise. These skills teach Claude Code (and other agents) how to write correct, production-ready Postgres code instead of relying on training data alone.</p>
+
+  <div class="co info"><i class="fas fa-info-circle"></i><div>Based on the official Supabase blog post: <a href="https://supabase.com/blog/postgres-best-practices-for-ai-agents" target="_blank">Introducing: Postgres Best Practices for AI Agents</a>.</div></div>
+
+  <!-- WHY SKILLS MATTER -->
+  <h4>Why Agent Skills Matter</h4>
+  <p>AI agents are good at writing code but struggle with systems they don't fully understand. Postgres has decades of features, edge cases, and performance characteristics. Without explicit guidance, agents might:</p>
+  <ul class="fl">
+    <li><i class="fas fa-chevron-right"></i><div>Generate a query that works but creates a <strong>full table scan</strong></div></li>
+    <li><i class="fas fa-chevron-right"></i><div>Suggest an index that <strong>slows down writes</strong> instead of speeding up reads</div></li>
+    <li><i class="fas fa-chevron-right"></i><div><strong>Miss Row Level Security</strong> entirely, leaving data exposed</div></li>
+    <li><i class="fas fa-chevron-right"></i><div>Create migrations that <strong>lock tables in production</strong></div></li>
+    <li><i class="fas fa-chevron-right"></i><div>Exhaust <strong>connection pools</strong> from poorly managed clients</div></li>
+  </ul>
+
+  <p>Agent Skills solve this by providing explicit, authoritative rules the agent reads on demand — like documentation written for machines.</p>
+
+  <!-- WHAT'S IN THE SKILL PACK -->
+  <h4>What's in the Skills Pack</h4>
+  <p>The repository contains <strong>30+ rules</strong> across 8 categories, prioritized by impact:</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Category</th><th>Priority</th><th>What It Covers</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Query Performance</strong></td><td><span style="color:var(--red);font-weight:700">Critical</span></td><td>Writing efficient queries, avoiding full table scans</td></tr>
+        <tr><td><strong>Connection Management</strong></td><td><span style="color:var(--red);font-weight:700">Critical</span></td><td>Connection pooling, client lifecycle, resource limits</td></tr>
+        <tr><td><strong>Security &amp; RLS</strong></td><td><span style="color:var(--red);font-weight:700">Critical</span></td><td>Row Level Security policies and access control patterns</td></tr>
+        <tr><td><strong>Schema Design</strong></td><td><span style="color:var(--yellow);font-weight:700">High</span></td><td>Table structure, data types, normalization decisions</td></tr>
+        <tr><td><strong>Concurrency &amp; Locking</strong></td><td><span style="color:var(--blue);font-weight:700">Medium-High</span></td><td>Transaction isolation, deadlock prevention, lock management</td></tr>
+        <tr><td><strong>Data Access Patterns</strong></td><td><span style="color:var(--blue);font-weight:700">Medium</span></td><td>Pagination, bulk operations, query design</td></tr>
+        <tr><td><strong>Monitoring &amp; Diagnostics</strong></td><td><span style="color:var(--t3);font-weight:700">Low-Medium</span></td><td>Query analysis, performance tracking, debugging</td></tr>
+        <tr><td><strong>Advanced Features</strong></td><td><span style="color:var(--t3);font-weight:700">Low</span></td><td>CTEs, window functions, extensions</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Each rule follows a consistent format with a clear title, priority level, explanation of why it matters, and correct vs. incorrect code examples.</p>
+
+  <!-- EXAMPLE RULE -->
+  <h4>Example Rule: Enable RLS for Multi-Tenant Data</h4>
+  <div class="tabs">
+    <button class="tab-btn on" data-t="supa-skill-bad">Incorrect Pattern</button>
+    <button class="tab-btn" data-t="supa-skill-good">Correct Pattern</button>
+  </div>
+
+  <div class="tab-p on" id="supa-skill-bad">
+    <p>Relying only on application-level filtering — a bug or bypass exposes all data:</p>
+    <div class="cb"><div class="cb-h"><span class="cb-l">SQL — Application-level filtering only</span><button class="cb-c" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div><pre>-- Relying only on application to filter
+SELECT * FROM orders
+WHERE user_id = $current_user_id;
+
+-- Bug or bypass means all data is exposed!
+-- Returns ALL orders:
+SELECT * FROM orders;</pre></div>
+  </div>
+
+  <div class="tab-p" id="supa-skill-good">
+    <p>Database-enforced RLS ensures security at the Postgres level:</p>
+    <div class="cb"><div class="cb-h"><span class="cb-l">SQL — Database-enforced RLS</span><button class="cb-c" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div><pre>-- Enable RLS on the table
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for users to see only their orders
+CREATE POLICY orders_user_policy ON orders
+  FOR ALL
+  USING (
+    user_id = current_setting('app.current_user_id')::bigint
+  );
+
+-- Force RLS even for table owners
+ALTER TABLE orders FORCE ROW LEVEL SECURITY;
+
+-- For the authenticated role (Supabase specific):
+CREATE POLICY orders_user_policy ON orders
+  FOR ALL
+  TO authenticated
+  USING (user_id = auth.uid());</pre></div>
+  </div>
+
+  <!-- INSTALLATION -->
+  <h4>Installing Supabase Skills in Claude Code</h4>
+  <p>There are two ways to install the Postgres best practices skills:</p>
+
+  <div class="tabs">
+    <button class="tab-btn on" data-t="supa-skill-npx">Via npx (Any Agent)</button>
+    <button class="tab-btn" data-t="supa-skill-plugin">Claude Code Plugin</button>
+  </div>
+
+  <div class="tab-p on" id="supa-skill-npx">
+    <p>Use <a href="https://www.npmjs.com/package/skills" target="_blank">Vercel's skills npm package</a> to interactively install the skill:</p>
+    <div class="cb"><div class="cb-h"><span class="cb-l">Terminal — Install via npx</span><button class="cb-c" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div><pre>npx skills add supabase/agent-skills</pre></div>
+    <p>This works with Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, and other agents that support the Agent Skills format.</p>
+  </div>
+
+  <div class="tab-p" id="supa-skill-plugin">
+    <p>Install directly as a Claude Code plugin from the marketplace:</p>
+    <div class="cb"><div class="cb-h"><span class="cb-l">Claude Code — Plugin Install</span><button class="cb-c" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button></div><pre># Add the skill from the plugin marketplace
+/plugin marketplace add supabase/agent-skills
+
+# Install the Postgres best practices skill
+/plugin install postgres-best-practices@supabase-agent-skills</pre></div>
+    <p>Once installed, Claude Code has access to all 30+ rules and references them when writing queries, reviewing code, or suggesting schema changes.</p>
+  </div>
+
+  <!-- HOW SKILLS + MCP WORK TOGETHER -->
+  <h4>How Skills + MCP Work Together</h4>
+  <p>If you're already using the <strong>Supabase MCP server</strong> (configured above), adding the Postgres best practices skills creates a powerful combination:</p>
+
+  <div class="cgrid">
+    <div class="mc"><div class="mc-i" style="color:var(--blue)"><i class="fas fa-steering-wheel fa-database"></i></div><h4>MCP Server = Ability</h4><p>Gives Claude Code the <strong>ability</strong> to connect, query, create tables, manage schemas, and configure your Supabase project directly.</p></div>
+    <div class="mc"><div class="mc-i" style="color:var(--green)"><i class="fas fa-graduation-cap"></i></div><h4>Agent Skills = Judgment</h4><p>Teaches Claude Code <strong>how to do it correctly</strong> — warns before creating index locks, suggests RLS policies, and structures queries for performance.</p></div>
+  </div>
+
+  <div class="steps">
+    <div class="stp">
+      <h4>You ask Claude to add a table</h4>
+      <p>"Add an orders table with user_id, total_cents, and timestamps"</p>
+    </div>
+    <div class="stp">
+      <h4>Skills guide the design</h4>
+      <p>Claude references the Schema Design and Security &amp; RLS rules to generate a properly structured table with RLS policies, correct data types, and appropriate indexes.</p>
+    </div>
+    <div class="stp">
+      <h4>MCP server executes the migration</h4>
+      <p>The migration is applied directly to your Supabase database through the MCP connection, with the skills ensuring the migration won't lock tables in production.</p>
+    </div>
+  </div>
+
+  <div class="co tip"><i class="fas fa-lightbulb"></i><div><strong>Recommended setup:</strong> Install both the <strong>MCP server</strong> (for database access) and the <strong>Agent Skills</strong> (for Postgres expertise) to get the most out of Claude Code with Supabase. The agent treats skills as authoritative guidance rather than generating advice from training data.</div></div>
+
+  <!-- WHAT THE INDUSTRY IS DOING -->
+  <h4>The Agent Skills Ecosystem</h4>
+  <p>The Agent Skills format is an <a href="https://agentskills.io/" target="_blank">open standard</a> adopted across the industry. Other notable skills:</p>
+  <ul class="fl">
+    <li><i class="fas fa-chevron-right"></i><div><strong>Vercel — <a href="https://vercel.com/blog/introducing-react-best-practices" target="_blank">react-best-practices</a></strong> — 40 rules packaging 10 years of React &amp; Next.js optimization knowledge</div></li>
+    <li><i class="fas fa-chevron-right"></i><div><strong>Cloudflare — <a href="https://github.com/cloudflare/skills" target="_blank">Workers, Pages, D1, R2 &amp; more</a></strong> — Skills for 40+ Cloudflare services</div></li>
+    <li><i class="fas fa-chevron-right"></i><div><strong>Supabase — <a href="https://github.com/supabase/agent-skills" target="_blank">Postgres Best Practices</a></strong> — 30+ rules for production-ready Postgres code</div></li>
+  </ul>
+
+  <div class="co info"><i class="fas fa-info-circle"></i><div><strong>Contributing:</strong> If you've hit a Postgres gotcha that agents should know about, you can <a href="https://github.com/supabase/agent-skills" target="_blank">open a PR</a> on the repo. Each rule needs a clear title, priority level, explanation, and good/bad code examples. See the <code>CONTRIBUTING.md</code> for the full template.</div></div>
 </section>
 
 <!-- ============================================================ -->
@@ -1686,8 +1831,7 @@ claude mcp add --transport http supabase https://mcp.supabase.com/mcp
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div><strong>Internal Team Guide</strong> · Last updated: February 16, 2026 ·  <strong></strong></div>
-  <div> <a href="https://anthropic.com" target="_blank"></a></div>
+  <div>Built with love by <strong>Closefuture</strong> team</div>
 </footer>
 
 <!-- JS -->
@@ -1727,24 +1871,18 @@ allSecs.forEach(s=>obs.observe(s));
 document.querySelectorAll('.tab-btn').forEach(b=>{
   b.addEventListener('click',()=>{
     const t=b.dataset.t;
-    const tabBar=b.closest('.tabs');
-    // Toggle buttons in this tab bar only
-    tabBar.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
+    const p=b.closest('.stp')||b.closest('.sec');
+    p.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('on'));
+    p.querySelectorAll('.tab-p').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
-    // Toggle panels: collect sibling .tab-p elements after this .tabs bar
-    let el=tabBar.nextElementSibling;
-    while(el && el.classList.contains('tab-p')){
-      el.classList.remove('on');
-      el=el.nextElementSibling;
-    }
     document.getElementById(t)?.classList.add('on');
   });
 });
 
 // === COPY CODE ===
 function copyCode(btn){
-  const cb=btn.closest('.cb');
-  const code=(cb.querySelector('code')||cb.querySelector('pre')).textContent;
+  const block=btn.closest('.cb');
+  const code=(block.querySelector('code')||block.querySelector('pre')).textContent;
   navigator.clipboard.writeText(code).then(()=>{
     btn.classList.add('ok');
     btn.innerHTML='<i class="fas fa-check"></i> Copied';
